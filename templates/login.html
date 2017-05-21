@@ -158,10 +158,10 @@
                 </div>
             </div>
             <div id="register-tab">
-                <form id="form-register" action="/register" method="post">
+                <form id="form-register" action="/captcha" method="post">
                     <div class="div-input-group">
                         <div>
-                            <input id="input-name" type="text" placeholder="姓名" name="name">
+                            <input id="input-name" type="text" placeholder="姓名" name="name" onblur="getCheckCode()">
                             <div id="hint-name" class="hint hint-name hidden">&nbsp* 请输入正确的姓名</div>
                         </div>
                         <div>
@@ -169,7 +169,7 @@
                             <div id="hint-phone" class="hint hint-phone hidden">&nbsp* 请输入正确的手机号</div>
                         </div>
                         <div id="div-password">
-                            <input id="input-passwd" type="password" placeholder="密码（不少于6位）" name="passwd">
+                            <input id="input-passwd" type="password" placeholder="密码（不少于6位）" name="passwd" onblur="getCheckCode()">
                             <div id="hint-passwd" class="hint hint-passwd hidden">&nbsp* 请输入正确的密码</div>
                         </div>
                         <!-- captcha start -->
@@ -323,9 +323,13 @@
                 }
             },
             success: function (data) {
-                if (data.status == 0) {
-                    $('#captcha').attr('css', data.captcha);
-                }else if (data.status == 1) {
+                if (data.status == 1) {
+                    $('#captcha').attr('src', data.captcha_url);
+                    $('#input-checkcode').val('');
+                    $('#input-checkcode').focus();
+                    $('#hint-checkcode').text('验证码错误，请重新填写');
+                    $('#hint-checkcode').removeClass('hidden');
+                }else if (data.status == 0) {
                     var phone = $('#input-phone').val();
                     $('#input-phone-modal').attr('placeholder', phone);
                     $('#checkModal').modal();
@@ -387,20 +391,25 @@
             return false;
         }
         $.ajax({
-            url: '/register/captcha?phone=' + $('#input-phone').val(),
+            url: '/captcha?phone=' + $('#input-phone').val(),
             type: 'GET',
             dataType: 'json',
             async: true,
             success: function (data) {
-                $('#captcha').attr('src', data.captcha);
+                console.log(data.status);
+                console.log(data.captcha_url);
+                if (data.status == 0) {
+                    $('#captcha').attr('src', data.captcha_url);
+                }
+                $('#div-checkout').removeClass('hidden');
+                $('#div-checkout').animate({height:'52px', opacity: '1'});
+                $('#input-checkcode').focus();
             },
             error: function (data) {
                 alert('error');
             }
         });
-        $('#div-checkout').removeClass('hidden');
-        $('#div-checkout').animate({height:'52px', opacity: '1'});
-        $('#input-passwd').focus();
+
     }
 </script>
 </html>

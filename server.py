@@ -1,11 +1,11 @@
 from flask import Flask
-from route.login import login
-from route.register import register
+from route.login_route import login
+from route.captcha_route import captcha
 from route.home import home
 
 app = Flask(__name__)
 app.register_blueprint(login)
-app.register_blueprint(register)
+app.register_blueprint(captcha)
 app.register_blueprint(home)
 
 
