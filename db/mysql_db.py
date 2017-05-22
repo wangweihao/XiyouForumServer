@@ -3,10 +3,9 @@
 
 from flask_sqlalchemy import SQLAlchemy
 
-from server import app
 from config import MYSQL_CONF
 
-def init_mysql():
+def init_mysql(app):
     db_uri = ''.join(['mysql+', MYSQL_CONF['connector'], '://', MYSQL_CONF['user'],
                    ':', MYSQL_CONF['passwd'], '@', MYSQL_CONF['host'], ':',
                    MYSQL_CONF['port'], '/', MYSQL_CONF['db'], '?charset=utf8'])
@@ -15,5 +14,3 @@ def init_mysql():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     db = SQLAlchemy(app, use_native_unicode='utf-8')
     return db
-
-db = init_mysql()

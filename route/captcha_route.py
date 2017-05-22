@@ -8,7 +8,7 @@ from flask import request
 
 from service import captcha_service as reg_serv
 
-captcha = Blueprint('register', __name__)
+captcha = Blueprint('captcha', __name__)
 
 @captcha.route('/captcha', methods=['POST'])
 def user_put_captcha():
@@ -16,7 +16,6 @@ def user_put_captcha():
     form = request.form
     if reg_serv.check_captcha(form['phone'], form['captcha']) == False:
         captcha_url = reg_serv.gen_captcha(form['phone'])
-        print captcha_url
         return json.dumps({
             'status': 1,
             'captcha_url': captcha_url

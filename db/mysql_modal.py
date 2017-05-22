@@ -3,7 +3,7 @@
 
 
 from datetime import datetime
-from mysql_db import db
+from server import db
 
 class User(db.Model):
     __tablename__ = 'user'

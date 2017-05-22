@@ -12,3 +12,4 @@ def init_redis():
     return rds
 
 rds = init_redis()
+

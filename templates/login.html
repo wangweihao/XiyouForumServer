@@ -222,15 +222,15 @@
                   <input id="input-phone-modal" type="text" disabled="disabled">
               </div>
               <div style="">
-                  <input type="text" placeholder="6位数验证码">
+                  <input id="input-auth-modal" type="text" placeholder="6位数验证码">
               </div>
           </div>
           <div class="modal-footer">
-              <button id="btn-countdown" class="btn" onclick="countTime()">
+              <button id="btn-countdown" class="btn" onclick="getAuthNum()">
                   <span id="span-countdown"></span>
                   <span id="span-countinfo">点击获取验证码</span>
               </button>
-              <button type="button" class="btn" style="background-color: #26a69a;color: white">进入</button>
+              <button id="btn-auth-register" onclick="userRegister()" type="button" class="btn" style="background-color: #26a69a;color: white">进入</button>
           </div>
         </div>
       </div>
@@ -283,6 +283,7 @@
             return false;
         })
     });
+    
     $(document).ready(function () {
         var options = {
             dataType: 'json',
@@ -343,17 +344,58 @@
             return false;
         });
     });
+    
     function getRegisterTab() {
         $('#register').css('border-bottom', '2px solid #26a69a');
         $('#login').css('border-bottom', 'none');
         $('#register-tab').removeClass('hidden');
         $('#login-tab').addClass('hidden');
     }
+    
     function getLoginTab() {
         $('#login').css('border-bottom', '2px solid #26a69a');
         $('#register').css('border-bottom', 'none');
         $('#login-tab').removeClass('hidden');
         $('#register-tab').addClass('hidden');
+    }
+
+    function userRegister() {
+        var request = {
+            'phone': $('#input-phone').val(),
+            'name': $('#input-name').val(),
+            'passwd': $('#input-passwd').val(),
+            'auth_number': $('#input-auth-modal').val()
+        };
+        $.ajax({
+            url: '/register',
+            type: 'POST',
+            dataType: 'json',
+            data: request,
+            async: true,
+            success: function () {
+                console.log('success');
+                alert('success');
+            },
+            error: function () {
+                alert('error');
+            }
+        })
+    }
+    
+    function getAuthNum() {
+        $.ajax({
+            url: '/register?phone=' + $('#input-phone').val(),
+            type: 'GET',
+            dateType: 'json',
+            async: true,
+            success: function (data) {
+                console.log(data.status);
+            },
+            error: function (data) {
+                alert('error');
+            }
+        });
+        countTime();
     }
     var time = 60;
     function countTime() {
@@ -372,6 +414,7 @@
         }
         setTimeout(countTime, 1000);
     }
+    
     function getCheckCode() {
         console.log('getCheckCode');
         var patternPhone = RegExp('^[0-9]{11}$');
@@ -409,7 +452,6 @@
                 alert('error');
             }
         });
-
     }
 </script>
 </html>
